@@ -91,3 +91,18 @@ CREATE TABLE DOCUMENT_TYPE(
     code VARCHAR(15) NOT NULL PRIMARY KEY,
     description VARCHAR(200) NOT NULL
 );
+
+CREATE TABLE DOCUMENT(  
+    type VARCHAR(15) NOT NULL,
+    documentNumber INT NOT NULL,
+    date DATE NOT NULL,
+    priceVATExcluded FLOAT NOT NULL,
+    priceVATIncluded FLOAT NOT NULL,
+    paymentDeadline DATE,
+    workflowId INT NOT NULL,
+    status VARCHAR(15),
+    PRIMARY KEY (type, documentNumber),
+    FOREIGN KEY (type) REFERENCES DOCUMENT_TYPE (code),
+    FOREIGN KEY (workflowId) REFERENCES WORKFLOW (id),
+    FOREIGN KEY (status) REFERENCES DOCUMENT_STATUS (code)
+);
