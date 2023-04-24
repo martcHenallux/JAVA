@@ -15,7 +15,7 @@ CREATE TABLE LOCALITY(
     FOREIGN KEY (country) REFERENCES COUNTRY (name)
 );
 
-CREATE TABLE ADRESS(  
+CREATE TABLE ADDRESS(  
     id INT NOT NULL PRIMARY KEY,
     idLocality INT NOT NULL,
     street VARCHAR(100) NOT NULL,
@@ -32,9 +32,9 @@ CREATE TABLE BUSINESS_ENTITY(
     isSupplier BOOLEAN NOT NULL,
     creditLimit FLOAT,
     codeStatus VARCHAR(25),
-    idAdress INT,
+    idAddress INT,
     hashPassword VARCHAR(100) NOT NULL,
     salt VARCHAR(20) NOT NULL,
     FOREIGN KEY (codeStatus) REFERENCES ENTITY_STATUS (code),
-    FOREIGN KEY (idAdress) REFERENCES ADRESS (id)
+    FOREIGN KEY (idAddress) REFERENCES ADDRESS (id)
 );
