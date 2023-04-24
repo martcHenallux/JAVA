@@ -38,3 +38,11 @@ CREATE TABLE BUSINESS_ENTITY(
     FOREIGN KEY (codeStatus) REFERENCES ENTITY_STATUS (code),
     FOREIGN KEY (idAddress) REFERENCES ADDRESS (id)
 );
+
+CREATE TABLE PERSON_OF_CONTACT(  
+    serialNumberCompany INT NOT NULL,
+    serialNumberPerson INT NOT NULL,
+    PRIMARY key (serialNumberCompany, serialNumberPerson),
+    FOREIGN KEY (serialNumberCompany) REFERENCES BUSINESS_ENTITY (serialNumber),
+    FOREIGN KEY (serialNumberPerson) REFERENCES BUSINESS_ENTITY (serialNumber)
+);
