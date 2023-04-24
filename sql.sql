@@ -106,3 +106,10 @@ CREATE TABLE DOCUMENT(
     FOREIGN KEY (workflowId) REFERENCES WORKFLOW (id),
     FOREIGN KEY (status) REFERENCES DOCUMENT_STATUS (code)
 );
+
+CREATE TABLE PRODUCT(  
+    productSerialNumber INT NOT NULL PRIMARY KEY,
+    tag VARCHAR(200) NOT NULL,
+    actualUnitPrice FLOAT NOT NULL,
+    stockQuantity INT NOT NULL
+);
