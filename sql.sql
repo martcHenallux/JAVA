@@ -22,3 +22,19 @@ CREATE TABLE ADRESS(
     number INT NOT NULL,
     FOREIGN KEY (idLocality) REFERENCES LOCALITY (id)
 );
+
+CREATE TABLE BUSINESS_ENTITY(  
+    serialNumber int NOT NULL PRIMARY KEY,
+    lastName VARCHAR(50) NOT NULL,
+    firstName VARCHAR(50),
+    birthDate DATETIME,
+    isCustomer BOOLEAN NOT NULL,
+    isSupplier BOOLEAN NOT NULL,
+    creditLimit FLOAT,
+    codeStatus VARCHAR(25),
+    idAdress INT,
+    hashPassword VARCHAR(100) NOT NULL,
+    salt VARCHAR(20) NOT NULL,
+    FOREIGN KEY (codeStatus) REFERENCES ENTITY_STATUS (code),
+    FOREIGN KEY (idAdress) REFERENCES ADRESS (id)
+);
