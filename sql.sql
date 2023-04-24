@@ -46,3 +46,11 @@ CREATE TABLE PERSON_OF_CONTACT(
     FOREIGN KEY (serialNumberCompany) REFERENCES BUSINESS_ENTITY (serialNumber),
     FOREIGN KEY (serialNumberPerson) REFERENCES BUSINESS_ENTITY (serialNumber)
 );
+
+CREATE TABLE BANK_INFORMATIONS(  
+    accountUser INT NOT NULL,
+    IBAN VARCHAR(20) NOT NULL,
+    BICCode VARCHAR(15),
+    PRIMARY KEY (accountUser, IBAN),
+    FOREIGN KEY (accountUser) REFERENCES BUSINESS_ENTITY (serialNumber) 
+);
