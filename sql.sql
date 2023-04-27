@@ -113,3 +113,15 @@ CREATE TABLE PRODUCT(
     actualUnitPrice FLOAT NOT NULL,
     stockQuantity INT NOT NULL
 );
+
+CREATE TABLE TRANSACTION_DETAILS(  
+    documentType VARCHAR(15) NOT NULL,
+    documentNumber INT NOT NULL,
+    code VARCHAR(15) NOT NULL,
+    quantity INT NOT NULL,
+    unitPrice DECIMAL(4,2) NOT NULL,
+    reference INT NOT NULL,
+    PRIMARY KEY (documentType, documentNumber, code),
+    FOREIGN KEY (documentType, documentNumber) REFERENCES DOCUMENT (type, number),
+    FOREIGN KEY (reference) REFERENCES PRODUCT (productSerialNumber)
+);
