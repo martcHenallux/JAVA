@@ -94,7 +94,7 @@ CREATE TABLE DOCUMENT_TYPE(
 
 CREATE TABLE DOCUMENT(  
     type VARCHAR(15) NOT NULL,
-    documentNumber INT AUTO_INCREMENT NOT NULL,
+    documentNumber INT NOT NULL,
     date DATE NOT NULL,
     priceVATExcluded FLOAT NOT NULL,
     priceVATIncluded FLOAT NOT NULL,
@@ -122,6 +122,6 @@ CREATE TABLE TRANSACTION_DETAILS(
     unitPrice DECIMAL(4,2) NOT NULL,
     reference INT NOT NULL,
     PRIMARY KEY (documentType, documentNumber, code),
-    FOREIGN KEY (documentType, documentNumber) REFERENCES DOCUMENT (type, number),
+    FOREIGN KEY (documentType, documentNumber) REFERENCES DOCUMENT (type, documentNumber),
     FOREIGN KEY (reference) REFERENCES PRODUCT (productSerialNumber)
 );
