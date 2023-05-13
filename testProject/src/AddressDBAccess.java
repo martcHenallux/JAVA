@@ -19,7 +19,7 @@ public class AddressDBAccess implements AddressDataAccess{
             preparedStatement.setInt(3, number);
             preparedStatement.executeUpdate();
         } catch (Exception e) {
-            System.out.println("Error: " + e.getMessage());
+            System.out.println("Error creating 1 address: " + e.getMessage());
         }
     }
 
@@ -34,11 +34,11 @@ public class AddressDBAccess implements AddressDataAccess{
             Locality locality;
             while(data.next()){
                 locality = localityDataAccess.readOneLocality(data.getInt("idLocality"));
-                address = new Address(null, locality, data.getString("street"), data.getInt("number"));
+                address = new Address(data.getInt("id"), locality, data.getString("street"), data.getInt("number"));
                 allAddresses.add(address);
             }
         } catch (Exception e) {
-            System.out.println("Error: " + e.getMessage());
+            System.out.println("Error reading all addresses: " + e.getMessage());
         }
         return allAddresses;
     }
@@ -51,27 +51,15 @@ public class AddressDBAccess implements AddressDataAccess{
             PreparedStatement preparedStatement = connection.prepareStatement(sqlInstruction);
             preparedStatement.setInt(1, id);
             ResultSet data = preparedStatement.executeQuery();
-            data.next();
-            address = new Address(null, localityDataAccess.readOneLocality(data.getInt("idLocality")), data.getString("street"), data.getInt("number"));
+            if(data.next()){
+                address = new Address(data.getInt("id"),
+                localityDataAccess.readOneLocality(data.getInt("idLocality")),
+                data.getString("street"), 
+                data.getInt("number"));
+            }
         } catch (Exception e) {
-            System.out.println("Error: " + e.getMessage());
+            System.out.println("Error reading 1 address: " + e.getMessage());
         }
         return address;
     }
-
-    public void addressIn(Locality locality, String street, int number){
-        ArrayList<Address> addresses = new ArrayList<>();
-        addresses = readAddresses();
-        boolean isIn = false;
-        for (Address address : addresses) {
-            if(address.getLocality().getId() == locality.getId() && address.getStreet().equals(street.toLowerCase()) && address.getNumber() == number){
-                isIn = true;
-            }
-        }
-        if(!isIn){
-            createAddress(locality.getId(), street, number);;
-            System.out.println("Adresse ajouté");
-        }
-    }
-
 }

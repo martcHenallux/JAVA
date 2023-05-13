@@ -5,20 +5,13 @@ import java.util.ArrayList;
 
 public class LocalityDBAccess implements LocalityDataAccess {
 
-    private CountryDataAccess countryDataAccess = new CountryDBAccess();
-
     public LocalityDBAccess(){}
-
-    public LocalityDBAccess(CountryDBAccess country){
-        this.countryDataAccess = country;
-    }
 
     public void createLocality(String country, String postalCode, String name){
         String sqlInstruction = "Insert into locality (country, postalCode, name) values (?, ?, ?)";
         Connection connection = SingletonConnexion.getInstance();
         try {
             PreparedStatement preparedStatement = connection.prepareStatement(sqlInstruction);
-            countryDataAccess.countryIn(country);
             preparedStatement.setString(1, country.toUpperCase());
             preparedStatement.setString(2, postalCode);
             preparedStatement.setString(3, name.toUpperCase());
@@ -54,26 +47,12 @@ public class LocalityDBAccess implements LocalityDataAccess {
             PreparedStatement preparedStatement = connection.prepareStatement(sqlInstruction);
             preparedStatement.setInt(1, id);
             ResultSet data = preparedStatement.executeQuery();
-            data.next();
-            locality = new Locality(null, new Country(data.getString("country")), data.getString("postalCode"), data.getString("name"));
+            if (data.next()){
+                locality = new Locality(null, new Country(data.getString("country")), data.getString("postalCode"), data.getString("name"));
+            }
         } catch (Exception e) {
             System.out.println("Error: " + e.getMessage());
         }
         return locality;
-    }
-
-    public void localityIn(String country, String postalCode, String name){
-        ArrayList<Locality> localities = new ArrayList<>();
-        localities = readLocalities();
-        boolean isIn = false;
-        for (Locality locality : localities) {
-            if(locality.getCountry().getName().equals(country.toUpperCase()) && locality.getPostalCode().equals(postalCode.toUpperCase()) && locality.getName().equals(name.toUpperCase())){
-                isIn = true;
-            }
-        }
-        if(!isIn){
-            createLocality(country, postalCode, name);
-            System.out.println("Localité ajouté");
-        }
     }
 }

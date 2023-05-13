@@ -7,7 +7,6 @@ public class EntityStatusDBAccess implements EntityStatusDataAccess{
     
     public EntityStatusDBAccess(){}
 
-    @Override
     public ArrayList<EntityStatus> readEntityStatus(){
         String sqlInstruction = "select * from entity_status";
         Connection connection = SingletonConnexion.getInstance();
@@ -24,5 +23,22 @@ public class EntityStatusDBAccess implements EntityStatusDataAccess{
             System.out.println("Error: " + e.getMessage());
         }
         return allEntityStatus;
+    }
+
+    public EntityStatus readOneEntityStatus(String code){
+        String sqlInstruction = "select * from entity_status where code = ?";
+        Connection connection = SingletonConnexion.getInstance();
+        EntityStatus status = null;
+        try {
+            PreparedStatement preparedStatement = connection.prepareStatement(sqlInstruction);
+            preparedStatement.setString(1, code);
+            ResultSet data = preparedStatement.executeQuery();
+            if(data.next()){
+                status = new EntityStatus(data.getString("code"), data.getString("description"));
+            }
+        } catch (Exception e) {
+            System.out.println("Error: " + e.getMessage());
+        }
+        return status;
     }
 }

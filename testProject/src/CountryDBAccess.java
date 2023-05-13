@@ -38,20 +38,4 @@ public class CountryDBAccess implements CountryDataAccess{
         }
         return allCountries;
     }
-
-    @Override
-    public void countryIn(String name){
-        ArrayList<Country> countries = new ArrayList<>();
-        countries = readCountries();
-        boolean isIn = false;
-        for (Country country : countries) {
-            if(country.getName().equals(name.toUpperCase())){
-                isIn = true;
-            }
-        }
-        if(!isIn){
-            createCountry(name);
-            System.out.println("Paix ajouté");
-        }
-    }
 }
