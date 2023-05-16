@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.Cursor?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="RegisterLoginController">
+   <children>
+      <Label contentDisplay="TOP" layoutX="104.0" layoutY="14.0" text="D R A K K A R Y S">
+         <font>
+            <Font name="Consolas" size="42.0" />
+         </font>
+      </Label>
+      <HBox alignment="TOP_CENTER" layoutX="84.0" layoutY="102.0" prefHeight="235.0" prefWidth="431.0">
+         <children>
+            <Button id="registerButton" fx:id="registerButton" mnemonicParsing="false" onAction="#registerButton" onMouseEntered="#mouseEnteredRegister" onMouseExited="#mouseExitedRegister" prefHeight="238.0" prefWidth="212.0" style="-fx-background-color: efefef; -fx-border-width: 2; -fx-border-color: black;" text="Register" textAlignment="CENTER">
+               <cursor>
+                  <Cursor fx:constant="CROSSHAIR" />
+               </cursor>
+               <font>
+                  <Font name="Consolas" size="30.0" />
+               </font>
+            </Button>
+            <Pane prefHeight="229.0" prefWidth="9.0" style="-fx-background-color: black;" />
+            <Button id="loginButton" fx:id="loginButton" mnemonicParsing="false" onAction="#loginButton" onMouseEntered="#mouseEnteredLogin" onMouseExited="#mouseExitedLogin" prefHeight="235.0" prefWidth="209.0" style="-fx-background-color: efefef; -fx-border-width: 2; -fx-border-color: black;" text="Login">
+               <opaqueInsets>
+                  <Insets />
+               </opaqueInsets>
+               <font>
+                  <Font size="30.0" />
+               </font>
+               <cursor>
+                  <Cursor fx:constant="CROSSHAIR" />
+               </cursor>
+            </Button>
+         </children>
+      </HBox>
+   </children>
+</AnchorPane>
