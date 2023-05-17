@@ -1,5 +1,5 @@
 package Controllers;
-
+//import Manager.*;
 import Model.Country;
 import Model.Locality;
 import Model.Address;
@@ -10,12 +10,17 @@ import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Objects;
+import java.io.IOException;
 import java.sql.Date;
 import java.sql.SQLException;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
@@ -29,12 +34,13 @@ import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.FlowPane;
+import javafx.stage.Stage;
 import Business.AddressManager;
 import Business.BusinessEntityManager;
 import Business.CountryManager;
 import Business.LocalityManager;
-import Exception.AdminException;
-import Exception.AdminException.errorNumber;
+import Controllers.AdminException.errorNumber;
+import javafx.scene.Node;
 
 
 public class AdminController {
@@ -123,6 +129,9 @@ public class AdminController {
     private Button updateSubmitButton;
 
     @FXML
+    private Button researchButton;
+
+    @FXML
     private TableView<EntryFromTable> table;
 
     @FXML
@@ -157,7 +166,8 @@ public class AdminController {
 
     private EntryFromTable updateBusinessEntity;
 
-    private void setTableValues(ObservableList<EntryFromTable> values) {
+
+    private void setTableItems(ObservableList<EntryFromTable> items) {
         column1.setCellValueFactory(new PropertyValueFactory<EntryFromTable, String>("column1"));
         column2.setCellValueFactory(new PropertyValueFactory<EntryFromTable, String>("column2"));
         column3.setCellValueFactory(new PropertyValueFactory<EntryFromTable, String>("column3"));
@@ -168,22 +178,23 @@ public class AdminController {
         column8.setCellValueFactory(new PropertyValueFactory<EntryFromTable, String>("column8"));
         column9.setCellValueFactory(new PropertyValueFactory<EntryFromTable, String>("column9"));
         column10.setCellValueFactory(new PropertyValueFactory<EntryFromTable, String>("column10"));
-        table.setItems(values);
+
+        table.setItems(items);
     }
 
-    private void setColumnsNames(String... names) {
-        TableColumn<?, ?>[] columns = {column1, column2, column3, column4, column5, column6, column7, 
-            column8, column9, column10};
-            
+    private void setColumnsNames(String... columnNames) {
+        TableColumn<?, ?>[] columns = {column1, column2, column3, column4, column5, column6, column7, column8, column9, column10};
+
         for (int i = 0; i < columns.length; i++) {
-            if (i < names.length) {
-                columns[i].setText(names[i]);
+            if (i < columnNames.length) {
+                columns[i].setText(columnNames[i]);
                 columns[i].setVisible(true);
             } else {
                 columns[i].setVisible(false);
             }
         }
     }
+
 
     @FXML
     private void createButtonOnClick(){
@@ -194,22 +205,22 @@ public class AdminController {
         customerCreationPane.setVisible(true);
         updatePane.setVisible(false);
     }
-
     @FXML
     private void readButtonOnClick(){
         createButton.setDisable(false);
         customerCreationPane.setVisible(false);
         updatePane.setVisible(false);
         BusinessEntityManager businessEntityManager = new BusinessEntityManager();
+
         try{
             ArrayList<BusinessEntity> customers = businessEntityManager.readBusinessEntities();
             ArrayList<EntryFromTable> customersEntry = new ArrayList<>();
             for (BusinessEntity businessEntity : customers) {
-                customersEntry.add(businessEntity.toTableEntry());
+                customersEntry.add(businessEntity.toEntryFromTable());
             }
-            ObservableList<EntryFromTable> values = FXCollections.observableList(customersEntry);
+            ObservableList<EntryFromTable> items = FXCollections.observableList(customersEntry);
             setColumnsNames("ID", "First Name", "Last Name", "Is Customer", "Is supplier", "Status", "Id address");
-            setTableValues(values);
+            setTableItems(items);
         }
         catch(SQLException exception){
             Alert sqlAlert = new Alert(AlertType.INFORMATION);
@@ -217,31 +228,35 @@ public class AdminController {
             sqlAlert.setContentText("There has been an error in the Data Base");
             sqlAlert.show();
         }
-    }
 
+    }
     @FXML
     private void updateButtonOnClick(){
         customerCreationPane.setVisible(false);
         updatePane.setVisible(true);
         createButton.setDisable(false);
+        
         updateBusinessEntity = table.getSelectionModel().getSelectedItem();
         if(updateBusinessEntity != null){
             updatePane.setVisible(true);
             updateIsCustomer.setSelected(Boolean.parseBoolean(updateBusinessEntity.getColumn4()));
             updateIsSupplier.setSelected(Boolean.parseBoolean(updateBusinessEntity.getColumn5()));
         }
+        else{
+            new AdminException(errorNumber.NO_LINE_SELECTED);
+        }
     }
-
     @FXML
     private void deleteButtonOnClick(){
         customerCreationPane.setVisible(false);
         updatePane.setVisible(false);
         createButton.setDisable(false);
-        EntryFromTable tableEntry = table.getSelectionModel().getSelectedItem();
-        if(tableEntry != null){
+
+        EntryFromTable entryFromTable = table.getSelectionModel().getSelectedItem();
+        if(entryFromTable != null){
             BusinessEntityManager businessEntityManager = new BusinessEntityManager();
             try{
-                businessEntityManager.deleteBusinessEntity(Integer.parseInt(tableEntry.getColumn1()));
+                businessEntityManager.deleteBusinessEntity(Integer.parseInt(entryFromTable.getColumn1()));
             }
             catch(SQLException exception){
                 Alert sqlAlert = new Alert(AlertType.INFORMATION);
@@ -249,6 +264,11 @@ public class AdminController {
                 sqlAlert.setContentText("There has been an error in the Data Base");
                 sqlAlert.show();
             }
+            readButtonOnClick();
+        }
+
+        else{
+            new AdminException(errorNumber.NO_LINE_SELECTED);
         }
     }
 
@@ -274,6 +294,7 @@ public class AdminController {
                     newAddress = addressManager.readOneAddress(newLocality, street.getText(), Integer.parseInt(houseNumber.getText()));
                 }
                 catch(SQLException e){
+                    
                     Alert sqlAlert = new Alert(AlertType.INFORMATION);
                     sqlAlert.setTitle("DataBase error");
                     sqlAlert.setContentText("There has been an error in the Data Base");
@@ -283,13 +304,11 @@ public class AdminController {
 
         }
         
-        if(!dateAreWrong() && ((newAddress != null && enterAddress.isSelected()) ||  !enterAddress.isSelected())){
+        if(!dataAreWrong() && ((newAddress != null && enterAddress.isSelected()) ||  !enterAddress.isSelected())){
             try{
                 BusinessEntityManager businessEntityManager = new BusinessEntityManager();
                 businessEntityManager.tryCreateBusinessEntity(lastName.getText(), firstName.getText(), sqlDate, isCustomer.isSelected(), isSupplier.isSelected(), newAddress, password.getText(), "dondon");
-                if(firstName.getText() == null){
-                    //throw exception
-                }
+                readButtonOnClick();
             }
             catch(SQLException exception){
                 Alert sqlAlert = new Alert(AlertType.INFORMATION);
@@ -300,7 +319,7 @@ public class AdminController {
         }
     }
 
-    public Boolean dateAreWrong(){
+    public Boolean dataAreWrong(){
         Integer errorsNb = 0;
         if(lastName.getText().length() == 0){
             new AdminException(errorNumber.LASTNAME_ERROR);
@@ -354,6 +373,7 @@ public class AdminController {
             int serialNumber =  Integer.parseInt(updateBusinessEntity.getColumn1());
             businessEntityManager.updateBusinessEntity(serialNumber, Boolean.parseBoolean(updateBusinessEntity.getColumn4()), 
             Boolean.parseBoolean(updateBusinessEntity.getColumn5()), updateBusinessEntity.getColumn6(), addressUpdate);
+            readButtonOnClick();
         }
         catch(SQLException exception){
             Alert sqlAlert = new Alert(AlertType.INFORMATION);
@@ -361,11 +381,25 @@ public class AdminController {
             sqlAlert.setContentText("There has been an error in the Data Base");
             sqlAlert.show();
         }
+
     }
 
     @FXML 
-    public void enterAddressCheck(){        
+    public void enterAddressCheck(){
+
+        
         addressPane.setVisible(!addressPane.isVisible());
+    }
+
+    @FXML
+    void researchButtonOnClick(ActionEvent event)  throws IOException {
+        Parent root = FXMLLoader.load(getClass().getResource("../interfaces/research.fxml"));
+        Stage stage = (Stage)((Node)event.getSource()).getScene().getWindow();   
+        Scene scene = new Scene(root);  
+        stage.setTitle("Research");
+        stage.setScene(scene);
+        stage.setResizable(false);
+        stage.show();
     }
 
     @FXML
@@ -386,5 +420,8 @@ public class AdminController {
             sqlAlert.setContentText("There has been an error in the Data Base");
             sqlAlert.show();
         }
+
     }
 }
+
+

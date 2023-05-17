@@ -56,7 +56,6 @@ public class RegisterLoginController {
         stage.setResizable(false);
         stage.show();
         
-        // Stage mainWindow = (Stage) tfTitle.getScene().getWindow();$
     }
 
     @FXML
@@ -68,7 +67,6 @@ public class RegisterLoginController {
         stage.setScene(scene);
         stage.setResizable(false);
         stage.show();
-        // Stage mainWindow = (Stage) tfTitle.getScene().getWindow();$
     }
 
 }
