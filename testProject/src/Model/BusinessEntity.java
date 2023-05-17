@@ -2,7 +2,7 @@ package Model;
 import java.sql.Date;
 import java.util.ArrayList;
 
-import Controllers.TableEntry;
+import Controllers.EntryFromTable;
 
 public class BusinessEntity {
     private int serialNumber;
@@ -76,42 +76,12 @@ public class BusinessEntity {
         return address;
     }
 
-    @Override
-    public String toString() {
-        StringBuilder entity = new StringBuilder("Serial number: " + serialNumber + "\n");
-        entity.append("Last name: " + lastName + "\n");
-        if (isCustomer){
-            entity.append("First name: " + firstName + "\n");
-            entity.append("Birth date: " + birthDate.toString() + "\n");
-            entity.append("Status: " + status.getCode() + "\n");
-            if(!status.getCode().equals("occasionnel")){
-                entity.append("Credit limit: " + creditLimit + "\n");
-            }
-            entity.append("Is a client.\n");
-        }
-        if (isSupplier){
-            entity.append("Is a supplier.\n");
-        }
-        if(address!= null){
-            entity.append("Address: " + address + "\n");
-        }
-        if (isSupplier){
-            entity.append(displayPeopleOfContact());
-        }
-        return entity.toString();
+    public ArrayList<BusinessEntity> getPeopleOfContact() {
+        return peopleOfContact;
     }
 
-    public String displayPeopleOfContact(){
-        StringBuilder people = new StringBuilder("People of contact: {");
-        for (BusinessEntity person : peopleOfContact) {
-            people.append("" + person);
-        }
-        people.append("}");
-        return people.toString();
-    }
-
-    public TableEntry toTableEntry() {
-        return new TableEntry(
+    public EntryFromTable toTableEntry() {
+        return new EntryFromTable(
             Integer.toString(serialNumber),
             firstName,
             lastName,
@@ -119,11 +89,6 @@ public class BusinessEntity {
             Boolean.toString(isSupplier),
             (status == null ? "null" : status.getCode()),
             (address == null ? "null" : Integer.toString(address.getId()))
-            // address.getStreet(),
-            // Integer.toString(address.getNumber()),
-            // address.getLocality().getPostalCode(),
-            // address.getLocality().getName(),
-            // address.getLocality().getCountry().getName()
         );
     }
 }

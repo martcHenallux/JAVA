@@ -1,5 +1,5 @@
 package Controllers;
-//import Manager.*;
+
 import Model.Country;
 import Model.Locality;
 import Model.Address;
@@ -25,8 +25,6 @@ import javafx.scene.control.PasswordField;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
-import javafx.scene.control.TextInputControl;
-import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.AnchorPane;
@@ -35,9 +33,8 @@ import Business.AddressManager;
 import Business.BusinessEntityManager;
 import Business.CountryManager;
 import Business.LocalityManager;
-import Controllers.AdminException.errorNumber;
-
-
+import Exception.AdminException;
+import Exception.AdminException.errorNumber;
 
 
 public class AdminController {
@@ -126,69 +123,67 @@ public class AdminController {
     private Button updateSubmitButton;
 
     @FXML
-    private TableView<TableEntry> table;
+    private TableView<EntryFromTable> table;
 
     @FXML
-    private TableColumn<TableEntry, String> column1;
+    private TableColumn<EntryFromTable, String> column1;
 
     @FXML
-    private TableColumn<TableEntry, String> column2;
+    private TableColumn<EntryFromTable, String> column2;
 
     @FXML
-    private TableColumn<TableEntry, String> column3;
+    private TableColumn<EntryFromTable, String> column3;
 
     @FXML
-    private TableColumn<TableEntry, String> column4;
+    private TableColumn<EntryFromTable, String> column4;
 
     @FXML
-    private TableColumn<TableEntry, String> column5;
+    private TableColumn<EntryFromTable, String> column5;
 
     @FXML
-    private TableColumn<TableEntry, String> column6;
+    private TableColumn<EntryFromTable, String> column6;
 
     @FXML
-    private TableColumn<TableEntry, String> column7;
+    private TableColumn<EntryFromTable, String> column7;
 
     @FXML
-    private TableColumn<TableEntry, String> column8;
+    private TableColumn<EntryFromTable, String> column8;
 
     @FXML
-    private TableColumn<TableEntry, String> column9;
+    private TableColumn<EntryFromTable, String> column9;
 
     @FXML
-    private TableColumn<TableEntry, String> column10;
+    private TableColumn<EntryFromTable, String> column10;
 
-    private TableEntry updateBusinessEntity;
+    private EntryFromTable updateBusinessEntity;
 
-
-    private void setTableItems(ObservableList<TableEntry> items) {
-        column1.setCellValueFactory(new PropertyValueFactory<TableEntry, String>("column1"));
-        column2.setCellValueFactory(new PropertyValueFactory<TableEntry, String>("column2"));
-        column3.setCellValueFactory(new PropertyValueFactory<TableEntry, String>("column3"));
-        column4.setCellValueFactory(new PropertyValueFactory<TableEntry, String>("column4"));
-        column5.setCellValueFactory(new PropertyValueFactory<TableEntry, String>("column5"));
-        column6.setCellValueFactory(new PropertyValueFactory<TableEntry, String>("column6"));
-        column7.setCellValueFactory(new PropertyValueFactory<TableEntry, String>("column7"));
-        column8.setCellValueFactory(new PropertyValueFactory<TableEntry, String>("column8"));
-        column9.setCellValueFactory(new PropertyValueFactory<TableEntry, String>("column9"));
-        column10.setCellValueFactory(new PropertyValueFactory<TableEntry, String>("column10"));
-
-        table.setItems(items);
+    private void setTableValues(ObservableList<EntryFromTable> values) {
+        column1.setCellValueFactory(new PropertyValueFactory<EntryFromTable, String>("column1"));
+        column2.setCellValueFactory(new PropertyValueFactory<EntryFromTable, String>("column2"));
+        column3.setCellValueFactory(new PropertyValueFactory<EntryFromTable, String>("column3"));
+        column4.setCellValueFactory(new PropertyValueFactory<EntryFromTable, String>("column4"));
+        column5.setCellValueFactory(new PropertyValueFactory<EntryFromTable, String>("column5"));
+        column6.setCellValueFactory(new PropertyValueFactory<EntryFromTable, String>("column6"));
+        column7.setCellValueFactory(new PropertyValueFactory<EntryFromTable, String>("column7"));
+        column8.setCellValueFactory(new PropertyValueFactory<EntryFromTable, String>("column8"));
+        column9.setCellValueFactory(new PropertyValueFactory<EntryFromTable, String>("column9"));
+        column10.setCellValueFactory(new PropertyValueFactory<EntryFromTable, String>("column10"));
+        table.setItems(values);
     }
 
-    private void setColumnsNames(String... columnNames) {
-        TableColumn<?, ?>[] columns = {column1, column2, column3, column4, column5, column6, column7, column8, column9, column10};
-
+    private void setColumnsNames(String... names) {
+        TableColumn<?, ?>[] columns = {column1, column2, column3, column4, column5, column6, column7, 
+            column8, column9, column10};
+            
         for (int i = 0; i < columns.length; i++) {
-            if (i < columnNames.length) {
-                columns[i].setText(columnNames[i]);
+            if (i < names.length) {
+                columns[i].setText(names[i]);
                 columns[i].setVisible(true);
             } else {
                 columns[i].setVisible(false);
             }
         }
     }
-
 
     @FXML
     private void createButtonOnClick(){
@@ -199,23 +194,22 @@ public class AdminController {
         customerCreationPane.setVisible(true);
         updatePane.setVisible(false);
     }
+
     @FXML
     private void readButtonOnClick(){
         createButton.setDisable(false);
         customerCreationPane.setVisible(false);
         updatePane.setVisible(false);
         BusinessEntityManager businessEntityManager = new BusinessEntityManager();
-
         try{
             ArrayList<BusinessEntity> customers = businessEntityManager.readBusinessEntities();
-            ArrayList<TableEntry> customersEntry = new ArrayList<>();
+            ArrayList<EntryFromTable> customersEntry = new ArrayList<>();
             for (BusinessEntity businessEntity : customers) {
                 customersEntry.add(businessEntity.toTableEntry());
             }
-            ObservableList<TableEntry> items = FXCollections.observableList(customersEntry);
+            ObservableList<EntryFromTable> values = FXCollections.observableList(customersEntry);
             setColumnsNames("ID", "First Name", "Last Name", "Is Customer", "Is supplier", "Status", "Id address");
-            setTableItems(items);
-            //tableView.getItems().addAll(customers);
+            setTableValues(values);
         }
         catch(SQLException exception){
             Alert sqlAlert = new Alert(AlertType.INFORMATION);
@@ -223,16 +217,13 @@ public class AdminController {
             sqlAlert.setContentText("There has been an error in the Data Base");
             sqlAlert.show();
         }
-        // for (BusinessEntity businessEntity : customers) {
-        //     tableView.getItems().add(businessEntity);
-        //}
     }
+
     @FXML
     private void updateButtonOnClick(){
         customerCreationPane.setVisible(false);
         updatePane.setVisible(true);
         createButton.setDisable(false);
-        
         updateBusinessEntity = table.getSelectionModel().getSelectedItem();
         if(updateBusinessEntity != null){
             updatePane.setVisible(true);
@@ -240,13 +231,13 @@ public class AdminController {
             updateIsSupplier.setSelected(Boolean.parseBoolean(updateBusinessEntity.getColumn5()));
         }
     }
+
     @FXML
     private void deleteButtonOnClick(){
         customerCreationPane.setVisible(false);
         updatePane.setVisible(false);
         createButton.setDisable(false);
-
-        TableEntry tableEntry = table.getSelectionModel().getSelectedItem();
+        EntryFromTable tableEntry = table.getSelectionModel().getSelectedItem();
         if(tableEntry != null){
             BusinessEntityManager businessEntityManager = new BusinessEntityManager();
             try{
@@ -259,7 +250,6 @@ public class AdminController {
                 sqlAlert.show();
             }
         }
-
     }
 
     @FXML
@@ -273,12 +263,10 @@ public class AdminController {
         }
         AddressManager addressManager = new AddressManager();
         LocalityManager localityManager = new LocalityManager();
-        CountryManager countryManager = new CountryManager();
         Address newAddress = null;
         if(enterAddress.isSelected()){
             if(!addressIsWrong()) {
                 try{
-
                     Country enteredCountry = new Country(countryChoice.getValue());
                     localityManager.tryCreateLocality(countryChoice.getValue(), postalCode.getText(), locality.getText());
                     Locality newLocality = localityManager.readOnLocality(postalCode.getText(), enteredCountry, locality.getText());
@@ -286,7 +274,6 @@ public class AdminController {
                     newAddress = addressManager.readOneAddress(newLocality, street.getText(), Integer.parseInt(houseNumber.getText()));
                 }
                 catch(SQLException e){
-                    
                     Alert sqlAlert = new Alert(AlertType.INFORMATION);
                     sqlAlert.setTitle("DataBase error");
                     sqlAlert.setContentText("There has been an error in the Data Base");
@@ -374,13 +361,10 @@ public class AdminController {
             sqlAlert.setContentText("There has been an error in the Data Base");
             sqlAlert.show();
         }
-
     }
 
     @FXML 
-    public void enterAddressCheck(){
-
-        
+    public void enterAddressCheck(){        
         addressPane.setVisible(!addressPane.isVisible());
     }
 
@@ -402,24 +386,5 @@ public class AdminController {
             sqlAlert.setContentText("There has been an error in the Data Base");
             sqlAlert.show();
         }
-
     }
 }
-
-    // private CountryManager countryManager;
-    // private LocalityManager localityManager;
-    // private AddressDataManager addressManager;
-    
-
-    // public ArrayList<Country> getAllCountries(){
-    //     return countryManager.getAllCountries();
-    // }
-
-    // public ArrayList<Locality> getAllLocalities(){
-    //     return localityManager.getAllLocalities();
-    // }
-
-    // public ArrayList<Address> getAllAddresses(){
-    //     return addressManager.getAllAddresses();
-    // }
-//}
