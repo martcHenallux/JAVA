@@ -30,8 +30,18 @@ public class BusinessEntityDBAccess implements BusinessEntityDataAccess{
         Connection connection = SingletonConnexion.getInstance();
         try (PreparedStatement preparedStatement = connection.prepareStatement(sqlInstruction.toString())){
             preparedStatement.setString(1, lastName);
-            preparedStatement.setString(2, firstName);
-            preparedStatement.setDate(3, birthDate);
+            if(firstName == null){
+                preparedStatement.setNull(2, java.sql.Types.VARCHAR);
+            }
+            else{
+                preparedStatement.setString(2, firstName);
+            }
+            if(birthDate == null){
+                preparedStatement.setNull(3, java.sql.Types.DATE);
+            }
+            else{
+                preparedStatement.setDate(3, birthDate);
+            }
             preparedStatement.setBoolean(4, isCustomer);
             preparedStatement.setBoolean(5, isSupplier);
             if(isCustomer == false){
@@ -193,11 +203,11 @@ public class BusinessEntityDBAccess implements BusinessEntityDataAccess{
 
     public void updateBusinessEntity(int serialNumber, Boolean isCustomer, Boolean isSupplier, String codeStatus, 
             Integer addressId) throws SQLException{
-        StringBuilder sqlInstruction = new StringBuilder("update businessEntity");
+        StringBuilder sqlInstruction = new StringBuilder("update business_entity");
         sqlInstruction.append(" set isCustomer = ?, isSupplier = ?, codeStatus = ?,idAddress = ?");
         sqlInstruction.append(" where serialNumber = ?");
         Connection connection = SingletonConnexion.getInstance();
-        try (PreparedStatement preparedStatement = connection.prepareStatement(sqlInstruction.toString())){
+        try(PreparedStatement preparedStatement = connection.prepareStatement(sqlInstruction.toString())){
             preparedStatement.setBoolean(1, isCustomer);
             preparedStatement.setBoolean(2, isSupplier);
             if(isCustomer == false){
@@ -212,6 +222,7 @@ public class BusinessEntityDBAccess implements BusinessEntityDataAccess{
             else{
                 preparedStatement.setInt(4, addressId);
             }
+            System.out.println("test fin");
             preparedStatement.setInt(5, serialNumber);
             preparedStatement.executeUpdate();
         }

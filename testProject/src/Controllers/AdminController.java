@@ -9,6 +9,7 @@ import java.time.Instant;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.ArrayList;
+import java.util.Objects;
 import java.sql.Date;
 import java.sql.SQLException;
 
@@ -277,6 +278,7 @@ public class AdminController {
         if(enterAddress.isSelected()){
             if(!addressIsWrong()) {
                 try{
+
                     Country enteredCountry = new Country(countryChoice.getValue());
                     localityManager.tryCreateLocality(countryChoice.getValue(), postalCode.getText(), locality.getText());
                     Locality newLocality = localityManager.readOnLocality(postalCode.getText(), enteredCountry, locality.getText());
@@ -294,7 +296,7 @@ public class AdminController {
 
         }
         
-        if(newAddress != null && enterAddress.isSelected() && !dateAreWrong()){
+        if(!dateAreWrong() && ((newAddress != null && enterAddress.isSelected()) ||  !enterAddress.isSelected())){
             try{
                 BusinessEntityManager businessEntityManager = new BusinessEntityManager();
                 businessEntityManager.tryCreateBusinessEntity(lastName.getText(), firstName.getText(), sqlDate, isCustomer.isSelected(), isSupplier.isSelected(), newAddress, password.getText(), "dondon");
@@ -317,7 +319,7 @@ public class AdminController {
             new AdminException(errorNumber.LASTNAME_ERROR);
             errorsNb++;
         }
-        if(password.getText().length() == 0 && password.getText() == confirmPassword.getText()){
+        if(password.getText().length() == 0 || !Objects.equals(password.getText(), confirmPassword.getText())){
             new AdminException(errorNumber.PASSWORD_ERROR);
             errorsNb++;
         }
@@ -365,7 +367,6 @@ public class AdminController {
             int serialNumber =  Integer.parseInt(updateBusinessEntity.getColumn1());
             businessEntityManager.updateBusinessEntity(serialNumber, Boolean.parseBoolean(updateBusinessEntity.getColumn4()), 
             Boolean.parseBoolean(updateBusinessEntity.getColumn5()), updateBusinessEntity.getColumn6(), addressUpdate);
-            System.out.println("error");
         }
         catch(SQLException exception){
             Alert sqlAlert = new Alert(AlertType.INFORMATION);
