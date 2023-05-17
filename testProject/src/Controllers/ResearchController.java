@@ -123,8 +123,6 @@ public class ResearchController {
 
 
     private int research;
-    private ArrayList<Product> products;
-    private ArrayList<Integer> idProducts;
 
     private void setTableValues(ObservableList<EntryFromTable> values) {
         column1.setCellValueFactory(new PropertyValueFactory<EntryFromTable, String>("column1"));
@@ -316,23 +314,6 @@ public class ResearchController {
         readButton.setDisable(true);
         updateButton.setDisable(true);
         deleteButton.setDisable(true); 
-        displayProductOne.setVisible(false);
-        displayProductTwo.setVisible(false); 
-        ProductManager productManager = new ProductManager();
-        try{
-            products = productManager.readAllProducts();
-            for (Product product: products){
-                productOneBox.getItems().add(product);
-                productTwoBox.getItems().add(product);
-                idProducts.add(product.getProductSerialNumber());
-            }
-        } catch(SQLException exception){
-            Alert sqlAlert = new Alert(AlertType.INFORMATION);
-            sqlAlert.setTitle("DataBase error");
-            sqlAlert.setContentText("There has been an error in the Data Base");
-            sqlAlert.show();
-        }
-
         research = 0;
     }
 }
