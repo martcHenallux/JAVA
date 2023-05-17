@@ -1,6 +1,8 @@
 package Model;
 import java.sql.Date;
 
+import Controllers.EntryFromTable;
+
 public class Document {
     
     private DocumentType type;
@@ -67,5 +69,14 @@ public class Document {
         docInformations.append("    Workflow number: " + workflow.getId() + "\n");
         docInformations.append("    Status: " + status.getCode());
         return docInformations.toString();
+    }
+
+    public EntryFromTable toEntryFromTable() {
+        return new EntryFromTable(
+            Integer.toString(documentNumber),
+            Float.toString(priceVATExcluded),
+            Float.toString(priceVATIncluded),
+            type.getCode()
+        );
     }
 }
