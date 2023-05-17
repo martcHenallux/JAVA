@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ButtonBar?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.layout.VBox?>
+
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="500.0" prefWidth="700.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Controllers.ResearchController">
+   <children>
+      <TableView fx:id="table" layoutY="70.0" prefHeight="180.0" prefWidth="700.0">
+         <columns>
+            <TableColumn fx:id="column1" prefWidth="75.99999845027924" />
+            <TableColumn fx:id="column2" minWidth="0.0" prefWidth="92.79999542236328" />
+            <TableColumn fx:id="column3" minWidth="0.0" prefWidth="90.39996337890625" />
+            <TableColumn fx:id="column4" prefWidth="63.99993896484375" />
+            <TableColumn fx:id="column5" minWidth="0.0" prefWidth="45.59991455078125" />
+            <TableColumn fx:id="column6" minWidth="0.0" prefWidth="40.800048828125" />
+            <TableColumn fx:id="column7" minWidth="0.0" prefWidth="108.79995727539062" />
+            <TableColumn fx:id="column8" prefWidth="43.20001220703125" />
+            <TableColumn fx:id="column9" prefWidth="95.99993896484375" />
+            <TableColumn fx:id="column10" prefWidth="75.0" />
+         </columns>
+      </TableView>
+      <HBox layoutY="250.0" prefHeight="30.0" prefWidth="700.0">
+         <children>
+            <Button fx:id="createButton" mnemonicParsing="false" prefHeight="30.0" prefWidth="175.0" text="CREATE" />
+            <Button fx:id="readButton" mnemonicParsing="false" onAction="#readButtonOnClick" prefHeight="50.0" prefWidth="175.0" text="READ" />
+            <Button fx:id="updateButton" mnemonicParsing="false" prefHeight="50.0" prefWidth="175.0" text="UPDATE" />
+            <Button fx:id="deleteButton" mnemonicParsing="false" prefHeight="30.0" prefWidth="175.0" text="DELETE" />
+         </children>
+      </HBox>
+      <ButtonBar layoutY="-6.0" prefHeight="40.0" prefWidth="700.0">
+        <buttons>
+          <Button fx:id="amountToPayButton" mnemonicParsing="false" onAction="#amountToPay" prefHeight="26.0" text="Montant a payer d'un client" />
+            <Button fx:id="bestProductSoldForEntityButton" mnemonicParsing="false" onAction="#bestProductSoldForEntity" text="meilleur produit vendu pour un client" />
+            <Button fx:id="getBankInformationsOfEntityFromDocumentButton" mnemonicParsing="false" onAction="#getBankInformationsOfEntityFromDocument" prefHeight="26.0" text="information bancaire d'un client selon un document" />
+        </buttons>
+      </ButtonBar>
+      <VBox fx:id="amountToPayBox" layoutX="14.0" layoutY="290.0" prefHeight="87.0" prefWidth="95.0">
+         <children>
+            <Label fx:id="text" />
+            <Label fx:id="display" />
+         </children>
+      </VBox>
+      <AnchorPane layoutX="309.0" layoutY="290.0" prefHeight="200.0" prefWidth="390.0">
+         <children>
+            <ComboBox fx:id="productOne" layoutY="2.0" prefWidth="150.0" />
+            <ComboBox fx:id="productTwo" layoutX="239.0" layoutY="2.0" prefWidth="150.0" />
+            <Button layoutX="163.0" layoutY="2.0" mnemonicParsing="false" onAction="#compareButton" text="Compare" />
+            <Pane fx:id="displayProductOne" layoutY="34.0" prefHeight="166.0" prefWidth="150.0">
+               <children>
+                  <Label layoutX="14.0" layoutY="6.0" text="Nom :" />
+                  <Label fx:id="nameOne" layoutX="81.0" layoutY="6.0" prefHeight="17.0" prefWidth="58.0" />
+                  <Label layoutX="15.0" layoutY="39.0" text="Quantité :" />
+                  <Label fx:id="quantityOne" layoutX="89.0" layoutY="39.0" prefHeight="17.0" prefWidth="58.0" />
+                  <Label layoutX="15.0" layoutY="75.0" text="Prix/L" />
+                  <Label fx:id="prixParLitreOne" layoutX="89.0" layoutY="75.0" prefHeight="17.0" prefWidth="58.0" />
+               </children>
+            </Pane>
+            <Pane fx:id="displayProductTxo" layoutX="239.0" layoutY="34.0" prefHeight="166.0" prefWidth="150.0">
+               <children>
+                  <Label layoutX="14.0" layoutY="6.0" text="Nom :" />
+                  <Label fx:id="nameTwo" layoutX="81.0" layoutY="6.0" prefHeight="17.0" prefWidth="58.0" />
+                  <Label layoutX="15.0" layoutY="39.0" text="Quantité :" />
+                  <Label fx:id="quantityTwo" layoutX="89.0" layoutY="39.0" prefHeight="17.0" prefWidth="58.0" />
+                  <Label layoutX="15.0" layoutY="75.0" text="Prix/L" />
+                  <Label fx:id="prixParLitreTwo" layoutX="89.0" layoutY="75.0" prefHeight="17.0" prefWidth="58.0" />
+               </children>
+            </Pane>
+         </children>
+      </AnchorPane>
+   </children>
+</AnchorPane>
