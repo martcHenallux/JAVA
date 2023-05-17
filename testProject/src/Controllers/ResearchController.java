@@ -18,11 +18,13 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.layout.Pane;
 
 public class ResearchController {
 
@@ -89,8 +91,40 @@ public class ResearchController {
     @FXML
     private Label text;
 
+    @FXML
+    private Label nameOne;
+
+    @FXML
+    private Label quantityOne;
+    
+    @FXML
+    private Label prixParLitreOne;
+
+    @FXML
+    private Label nameTwo;
+
+    @FXML
+    private Label quantityTwo;
+    
+    @FXML
+    private Label prixParLitreTwo;
+
+    @FXML 
+    private ComboBox<Product> productOneBox;
+
+    @FXML 
+    private ComboBox<Product> productTwoBox;
+
+    @FXML
+    private Pane displayProductOne;
+
+    @FXML
+    private Pane displayProductTwo;
+
 
     private int research;
+    private ArrayList<Product> products;
+    private ArrayList<Integer> idProducts;
 
     private void setTableValues(ObservableList<EntryFromTable> values) {
         column1.setCellValueFactory(new PropertyValueFactory<EntryFromTable, String>("column1"));
@@ -257,12 +291,48 @@ public class ResearchController {
 
 
     @FXML
+    void compareButton(ActionEvent event) {
+        Product productOne = productOneBox.getSelectionModel().getSelectedItem();
+        Product productTwo = productTwoBox.getSelectionModel().getSelectedItem();
+        if(productOneBox.getSelectionModel().getSelectedItem() != null && productOneBox.getSelectionModel().getSelectedItem() != null){
+
+            displayProductOne.setVisible(false);
+            displayProductTwo.setVisible(false); 
+            ProductManager productManager = new ProductManager();
+            nameOne.setText(productOne.getTag());
+            nameTwo.setText(productOne.getTag());
+            Object[][] products = productManager.compraringProducts(productOne, productTwo);
+            // Float prix = products[0][1];
+            // if(products[0][0] == productOne){
+            //     prixParLitreOne.setText(Float.toString());
+            // }
+            nameOne.setText(productOne.getTag());
+        }
+    }
+
+    @FXML
     public void initialize(){
         createButton.setDisable(true);
         readButton.setDisable(true);
         updateButton.setDisable(true);
-        deleteButton.setDisable(true);  
+        deleteButton.setDisable(true); 
+        displayProductOne.setVisible(false);
+        displayProductTwo.setVisible(false); 
+        ProductManager productManager = new ProductManager();
+        try{
+            products = productManager.readAllProducts();
+            for (Product product: products){
+                productOneBox.getItems().add(product);
+                productTwoBox.getItems().add(product);
+                idProducts.add(product.getProductSerialNumber());
+            }
+        } catch(SQLException exception){
+            Alert sqlAlert = new Alert(AlertType.INFORMATION);
+            sqlAlert.setTitle("DataBase error");
+            sqlAlert.setContentText("There has been an error in the Data Base");
+            sqlAlert.show();
+        }
+
         research = 0;
     }
-
 }
