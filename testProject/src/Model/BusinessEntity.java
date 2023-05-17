@@ -2,6 +2,8 @@ package Model;
 import java.sql.Date;
 import java.util.ArrayList;
 
+import Controllers.TableEntry;
+
 public class BusinessEntity {
     private int serialNumber;
     private String lastName;
@@ -106,5 +108,22 @@ public class BusinessEntity {
         }
         people.append("}");
         return people.toString();
+    }
+
+    public TableEntry toTableEntry() {
+        return new TableEntry(
+            Integer.toString(serialNumber),
+            firstName,
+            lastName,
+            Boolean.toString( isCustomer),
+            Boolean.toString(isSupplier),
+            (status == null ? "null" : status.getCode()),
+            (address == null ? "null" : Integer.toString(address.getId()))
+            // address.getStreet(),
+            // Integer.toString(address.getNumber()),
+            // address.getLocality().getPostalCode(),
+            // address.getLocality().getName(),
+            // address.getLocality().getCountry().getName()
+        );
     }
 }

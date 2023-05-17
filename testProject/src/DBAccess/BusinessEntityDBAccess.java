@@ -206,7 +206,12 @@ public class BusinessEntityDBAccess implements BusinessEntityDataAccess{
             else{
                 preparedStatement.setString(3, codeStatus);
             }
-            preparedStatement.setInt(4, addressId);
+            if (addressId == null){
+                preparedStatement.setNull(4, java.sql.Types.INTEGER);
+            }
+            else{
+                preparedStatement.setInt(4, addressId);
+            }
             preparedStatement.setInt(5, serialNumber);
             preparedStatement.executeUpdate();
         }

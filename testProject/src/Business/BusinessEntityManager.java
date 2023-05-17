@@ -50,45 +50,54 @@ public class BusinessEntityManager {
     }
 
     public void updateBusinessEntity(int serialNumber, Boolean isCustomer, Boolean isSupplier, String status, 
-    Address address, String hashPassword) throws SQLException{
-        dao.updateBusinessEntity(serialNumber, isCustomer, isSupplier, status, address.getId());
+    Address address) throws SQLException{
+        Integer addressId;
+        if(address == null){
+            addressId = null;
+        }
+        else{
+            addressId = address.getId();
+        }
+        dao.updateBusinessEntity(serialNumber, isCustomer, isSupplier, status, addressId);
     }
 
     public float amountToPay(BusinessEntity entity) throws SQLException{
         return dao.amountToPay(entity.getSerialNumber());
     }
 
-    public void tryCreateBusinessEntity(String lastName, String firstName, Date birthDate, Boolean isCustomer, 
-        Boolean isSupplier, Address address, String hashPassword, String salt) throws SQLException{
-            ArrayList<BusinessEntity> entities = new ArrayList<>();
-            entities = readBusinessEntities();
-            boolean isIn = false;
-            Boolean sameFirstName = false;
-            for (BusinessEntity entity : entities) {
-                if((entity.getFirstName() == firstName)){
-                    sameFirstName = true;
-                }
-                else if(entity.getFirstName() == null || firstName == null){
-                    sameFirstName = false;
-                }
-                else{
-                    if(entity.getFirstName().toUpperCase().equals(firstName.toUpperCase())){
-                        sameFirstName = true;
-                    }
-                    else{
-                        sameFirstName = false;
-                    }
-                }
-                if (entity.getLastName().toUpperCase().equals(lastName.toUpperCase()) && sameFirstName){
-                        isIn = true;
-                }
+    public void tryCreateBusinessEntity(String lastName, String firstName, 
+            Date birthDate, Boolean isCustomer, Boolean isSupplier, 
+            Address address, String hashPassword, String salt) throws SQLException{
+
+        ArrayList<BusinessEntity> entities = new ArrayList<>();
+        entities = readBusinessEntities();
+        boolean isIn = false;
+        Boolean sameFirstName = false;
+        for (BusinessEntity entity : entities) {
+            if((entity.getFirstName() == firstName)){
+                sameFirstName = true;
             }
-            if(!isIn){
-                createBusinessEntity(lastName, firstName, birthDate, isCustomer, isSupplier, address, 
-                    hashPassword, salt);
+            else if(entity.getFirstName() == null || firstName == null){
+                sameFirstName = false;
             }
             else{
-                //throw exception
+                if(entity.getFirstName().toUpperCase().equals(firstName.toUpperCase())){
+                    sameFirstName = true;
+                }
+                else{
+                    sameFirstName = false;
+                }
             }
+            if (entity.getLastName().toUpperCase().equals(lastName.toUpperCase()) && sameFirstName){
+                    isIn = true;
+            }
+        }
+        if(!isIn){
+            createBusinessEntity(lastName, firstName, birthDate, isCustomer, isSupplier, address, 
+                hashPassword, salt);
+        }
+        else{
+            //throw exception
+        }
     }
 }
